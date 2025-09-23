@@ -3,7 +3,7 @@ services:
         container_name: 
             nginx
         build:
-            context: ./requeriments/nginx
+            context: ./requirements/nginx
         ports:
             - "${NGINX_PORT}:443"
         restart: 
