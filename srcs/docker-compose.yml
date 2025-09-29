@@ -1,24 +1,43 @@
 services:
-    nginx:
-        container_name: 
-            nginx
-        build:
-            context: ./requirements/nginx
-        env_file:
-            - .env
-        ports:
-            - "${NGINX_PORT}:4343"
-        restart: 
-            always
-        networks:
-            - inception
-        volumes:
-            - nginx_data:/var/www/html
+  mariadb:
+    container_name: 
+      mariadb
+    build: ./requirements/mariadb
+    ports:
+      - "${MARIADB_PORT}:3306" #"<host_port>:<container_port>"
+    networks:
+      - inception
+    volumes:
+      - mariadb_data:/var/lib/mysql
+#   wordpress:
+#     container_name: 
+#       wordpress
+#     build: ./requirements/wordpress
+#     expose:
+#     - "${WORDPRESS_PORT}:9000"
+#     depends_on:
+#     - mariadb
+#     networks:
+#     - inception
+#     volumes:
+#     - wordpress_data:/var/www/html
+
+  nginx:
+    container_name: 
+      nginx
+    build:
+      context: ./requirements/nginx
+    ports:
+      - "${NGINX_PORT}:443" #"<host_port>:<container_port>"
+    restart: 
+      always
+    networks:
+      - inception
+
 
 volumes:
-  nginx_data:
-  #- ./requirements/nginx/html:/var/www/html
-
+  wordpress_data:
+  mariadb_data:
 
 networks:
     inception:
