@@ -4,8 +4,10 @@ services:
             nginx
         build:
             context: ./requirements/nginx
+        env_file:
+            - .env
         ports:
-            - "${NGINX_PORT}:443"
+            - "${NGINX_PORT}:4343"
         restart: 
             always
         networks:
@@ -14,7 +16,9 @@ services:
             - nginx_data:/var/www/html
 
 volumes:
-    nginx_data:
+  nginx_data:
+  #- ./requirements/nginx/html:/var/www/html
+
 
 networks:
     inception:
