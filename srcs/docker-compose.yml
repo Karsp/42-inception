@@ -7,20 +7,25 @@ services:
       - "${MARIADB_PORT}:3306" #"<host_port>:<container_port>"
     networks:
       - inception
+    restart: 
+      always
     volumes:
       - mariadb_data:/var/lib/mysql
-#   wordpress:
-#     container_name: 
-#       wordpress
-#     build: ./requirements/wordpress
-#     expose:
-#     - "${WORDPRESS_PORT}:9000"
-#     depends_on:
-#     - mariadb
-#     networks:
-#     - inception
-#     volumes:
-#     - wordpress_data:/var/www/html
+
+  wordpress:
+    container_name: 
+      wordpress
+    build: ./requirements/wordpress
+    expose:
+    - "${WORDPRESS_PORT}:9000"
+    depends_on:
+    - mariadb
+    networks:
+    - inception
+    volumes:
+    - wordpress_data:/var/www/html
+    restart: 
+      always
 
   nginx:
     container_name: 

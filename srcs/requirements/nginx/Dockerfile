@@ -12,12 +12,12 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048\
             -subj "/C=ES/L=MD/O=42/OU=student/CN=$DOMAIN_NAME"
 
 COPY html/index.html /var/www/html/index.html
-COPY ./conf/default.conf /etc/nginx/sites-available/
+COPY ./conf/nginx.conf /etc/nginx/sites-available/
 
 # Copiar el script y el archivo de configuración
 # COPY tools/generate_certs.sh /tmp/generate_certs.sh
 # COPY html/index.html /var/www/html/index.html
-# COPY conf/default.conf /etc/nginx/sites-available/default
+# COPY conf/nginx.conf /etc/nginx/sites-available/default
 
 # Dar permisos de ejecución al script y ejecutarlo
 # RUN chmod +x /tmp/generate_certs.sh && /tmp/generate_certs.sh
