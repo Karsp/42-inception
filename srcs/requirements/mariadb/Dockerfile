@@ -20,4 +20,4 @@ RUN chmod +x /run.sh
 ENTRYPOINT [ "/run.sh" ]
 
 # Start MariaDB when the container runs
-CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]
+# CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]
