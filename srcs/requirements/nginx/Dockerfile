@@ -1,28 +1,21 @@
 FROM alpine:3.22
 
-RUN apk update && \
-	apk add --no-cache nginx openssl
+# Install nginx and openssl
+RUN apk update && apk add --no-cache nginx openssl bash
 
-# Optional: create cert directory
-#RUN mkdir -p /etc/nginx/certs
+# Create directories
+RUN mkdir -p /etc/nginx/ssl /var/www/html /run/nginx && \
+    chown -R nginx:nginx /var/www/html
 
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048\
-            -keyout /etc/ssl/private/nginx-selfsigned.key\
-            -out /etc/ssl/certs/nginx-selfsigned.crt\
-            -subj "/C=ES/L=MD/O=42/OU=student/CN=$DOMAIN_NAME"
+# Copy entrypoint
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-COPY html/index.html /var/www/html/index.html
-COPY ./conf/nginx.conf /etc/nginx/sites-available/
+# Copy NGINX configuration
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-# Copiar el script y el archivo de configuración
-# COPY tools/generate_certs.sh /tmp/generate_certs.sh
-# COPY html/index.html /var/www/html/index.html
-# COPY conf/nginx.conf /etc/nginx/sites-available/default
+# Expose HTTPS port
+EXPOSE 443
 
-# Dar permisos de ejecución al script y ejecutarlo
-# RUN chmod +x /tmp/generate_certs.sh && /tmp/generate_certs.sh
-
-# RUN chmod -R 755 /var/www/html
-# RUN chown -R www-data:www-data /var/www/html
-
-CMD ["nginx", "-g", "daemon off;"]
+# Start container using entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

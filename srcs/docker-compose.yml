@@ -2,14 +2,10 @@ version: "3.8"
 
 services:
   mariadb:
-#   container_name: mariadb
     image: inception_mariadb
     deploy:
       restart_policy:
         condition: on-failure
-    # build: ./requirements/mariadb
-    ports:
-      - "${MARIADB_PORT}:3306" #"<host_port>:<container_port>"
     networks:
       - inception
     environment:
@@ -23,39 +19,43 @@ services:
       - db_root_password
       - db_password
       - db_admin_password
-    # restart: 
-    #   always
     volumes:
       - mariadb_data:/var/lib/mysql
 
-  # wordpress:
-  #   container_name: wordpress
-    # image: inception_wordpress
-  #   build: ./requirements/wordpress
-  #   expose:
-  #   - "${WORDPRESS_PORT}:9000"
-  #   depends_on:
-  #   - mariadb
-  #   networks:
-  #   - inception
-  #   volumes:
-  #   - wordpress_data:/var/www/html
-  #   restart: 
-  #     always
+  wordpress:
+    image: inception_wordpress
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - wordpress_data:/var/www/html
 
-  # nginx:
-    # image: inception_nginx
-  #   container_name: nginx
-  #   build:
-  #     context: ./requirements/nginx
-  #   ports:
-  #     - "${NGINX_PORT}:443" #"<host_port>:<container_port>"
-  #   restart: 
-  #     always
-  #   networks:
-  #     - inception
-      #  external: true
-    # or driver: bridge if you want compose to create it
+  nginx:
+    image: inception_nginx
+    ports:
+      - "${NGINX_PORT}:443"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - wordpress
+    networks:
+      - inception
+    secrets:
+      - tls_cert
+      - tls_key
+    volumes:
+      - wordpress_data:/var/www/html   # serve WordPress files
+      
+
 secrets:
   db_root_password:
     file: ../secrets/db_root_password.txt
@@ -63,10 +63,14 @@ secrets:
     file: ../secrets/db_password.txt
   db_admin_password:
     file: ../secrets/db_admin_password.txt
+  tls_cert:
+    file: ../secrets/tls_cert.pem
+  tls_key:
+    file: ../secrets/tls_key.pem
 
 volumes:
-  # wordpress_data:
   mariadb_data:
+  wordpress_data:
 
 networks:
     inception:
