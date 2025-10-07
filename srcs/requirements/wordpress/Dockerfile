@@ -1,35 +1,31 @@
-# WORDPRESS Dockerfile
 FROM alpine:3.22
 
 RUN apk update && apk add --no-cache \
     php82 \
     php82-fpm \
     php82-mysqli \
-    php82-mbstring \
     php82-json \
-    php82-session \
     php82-curl \
-    curl wget tar \
-    && rm -rf /var/cache/apk/*
-
-RUN mkdir -p /etc/php82/php-fpm.d
-# Copy custom php-fpm pool config
-COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
-
-RUN mkdir -p /etc/php82/php-fpm.d
-
-# Create web root and set permissions
-WORKDIR /var/www/html
+    php82-dom \
+    php82-exif \
+    php82-fileinfo \
+    php82-mbstring \
+    php82-openssl \
+    php82-xml \
+    php82-zip \
+    wget tar curl
 
 # Download WordPress
-RUN curl -o wordpress.tar.gz https://wordpress.org/latest.tar.gz \
-    && tar -xzf wordpress.tar.gz --strip 1 \
-    && rm wordpress.tar.gz
+WORKDIR /var/www/html
+RUN wget https://wordpress.org/latest.tar.gz \
+    && tar -xzf latest.tar.gz --strip-components=1 \
+    && rm latest.tar.gz
 
+# Configure PHP-FPM
+RUN mkdir -p /run/php && \
+    sed -i 's|^;daemonize = yes|daemonize = no|' /etc/php82/php-fpm.conf && \
+    sed -i 's|^;clear_env = no|clear_env = no|' /etc/php82/php-fpm.d/www.conf && \
+    sed -i 's|127\.0\.0\.1:9000|0.0.0.0:9000|' /etc/php82/php-fpm.d/www.conf
+
+EXPOSE 9000
 CMD ["php-fpm82", "-F"]
-
-
-
-#COPY ./tools/WORDPRESS_setup /run.sh
-
-# CMD ["/run.sh"]
