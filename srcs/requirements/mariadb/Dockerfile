@@ -1,23 +1,26 @@
 # Imagen base mínima
 FROM alpine:3.22
 
-RUN apk update && apk add --no-cache mariadb mariadb-client openrc
+# Install MariaDB, client, and OpenRC (used to create service dirs, not to start)
+RUN apk update && apk add --no-cache mariadb mariadb-client openrc bash
 
-# Create necessary directories
-RUN mkdir -p /run/mysqld && \
+# Prepare directories and permissions
+RUN mkdir -p /run/mysqld /var/lib/mysql && \
     chown -R mysql:mysql /run/mysqld /var/lib/mysql
 
-# Copy your custom config (optional, e.g. bind-address, port, etc.)
-# COPY conf/my.cnf /etc/my.cnf
+# Copy optional custom configuration (bind-address, charset, etc.)
+COPY conf/my.cnf /etc/my.cnf
 
-# Ensure database is initialized at build time
-COPY ./conf/my.cnf /etc/mysql/mariadb.conf.d/my.cnf
+# Initialization script(s) will be executed at first container init
+# Copy the initialization script
+COPY tools/init_db.sh /usr/local/bin/init_db.sh
+RUN chmod +x /usr/local/bin/init_db.sh
 
-COPY ./tools/dbSetup /run.sh
+# Copy and set entrypoint script (this replaces the official image logic)
+COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-RUN chmod +x /run.sh
+EXPOSE 3306
 
-ENTRYPOINT [ "/run.sh" ]
-
-# Start MariaDB when the container runs
-# CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["mysqld", "--user=mysql", "--console"]

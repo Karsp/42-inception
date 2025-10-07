@@ -1,50 +1,74 @@
+version: "3.8"
+
 services:
   mariadb:
-    container_name: 
-      mariadb
-    build: ./requirements/mariadb
+#   container_name: mariadb
+    image: inception_mariadb
+    deploy:
+      restart_policy:
+        condition: on-failure
+    # build: ./requirements/mariadb
     ports:
       - "${MARIADB_PORT}:3306" #"<host_port>:<container_port>"
     networks:
       - inception
-    restart: 
-      always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      DB_ADMIN_USER: "${DB_ADMIN_USER}"
+      DB_ADMIN_PASSWORD_FILE: /run/secrets/db_admin_password
+    secrets:
+      - db_root_password
+      - db_password
+      - db_admin_password
+    # restart: 
+    #   always
     volumes:
       - mariadb_data:/var/lib/mysql
 
-  wordpress:
-    container_name: 
-      wordpress
-    build: ./requirements/wordpress
-    expose:
-    - "${WORDPRESS_PORT}:9000"
-    depends_on:
-    - mariadb
-    networks:
-    - inception
-    volumes:
-    - wordpress_data:/var/www/html
-    restart: 
-      always
+  # wordpress:
+  #   container_name: wordpress
+    # image: inception_wordpress
+  #   build: ./requirements/wordpress
+  #   expose:
+  #   - "${WORDPRESS_PORT}:9000"
+  #   depends_on:
+  #   - mariadb
+  #   networks:
+  #   - inception
+  #   volumes:
+  #   - wordpress_data:/var/www/html
+  #   restart: 
+  #     always
 
-  nginx:
-    container_name: 
-      nginx
-    build:
-      context: ./requirements/nginx
-    ports:
-      - "${NGINX_PORT}:443" #"<host_port>:<container_port>"
-    restart: 
-      always
-    networks:
-      - inception
-
+  # nginx:
+    # image: inception_nginx
+  #   container_name: nginx
+  #   build:
+  #     context: ./requirements/nginx
+  #   ports:
+  #     - "${NGINX_PORT}:443" #"<host_port>:<container_port>"
+  #   restart: 
+  #     always
+  #   networks:
+  #     - inception
+      #  external: true
+    # or driver: bridge if you want compose to create it
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  db_admin_password:
+    file: ../secrets/db_admin_password.txt
 
 volumes:
-  wordpress_data:
+  # wordpress_data:
   mariadb_data:
 
 networks:
     inception:
-        driver: bridge
+        driver: overlay
         

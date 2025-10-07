@@ -1,2 +1,3 @@
-srcs/.env
-volumes/*
+# srcs/.env
+# volumes/*
+# secrets/
