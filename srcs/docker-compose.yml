@@ -12,12 +12,12 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
       DB_ADMIN_USER: "${DB_ADMIN_USER}"
       DB_ADMIN_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_root_password
-      - db_password
+      - mysql_password
       - db_admin_password
     volumes:
       - mariadb_data:/var/lib/mysql
@@ -29,12 +29,16 @@ services:
     networks:
       - inception
     environment:
-      WORDPRESS_DB_HOST: mariadb:3306
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-      WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+      WORDPRESS_TITLE: "${WORDPRESS_TITLE}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      DB_ADMIN_USER: "${DB_ADMIN_USER}"
+      DB_ADMIN_EMAIL: "${DB_ADMIN_EMAIL}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_USER_EMAIL: "${MYSQL_USER_EMAIL}"
+      DOMAIN_NAME: "${DOMAIN_NAME}"
     secrets:
-      - db_password
+      - db_admin_password
+      - mysql_password
     volumes:
       - wordpress_data:/var/www/html
 
@@ -59,8 +63,8 @@ services:
 secrets:
   db_root_password:
     file: ../secrets/db_root_password.txt
-  db_password:
-    file: ../secrets/db_password.txt
+  mysql_password:
+    file: ../secrets/mysql_password.txt
   db_admin_password:
     file: ../secrets/db_admin_password.txt
   tls_cert:
