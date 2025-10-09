@@ -12,12 +12,12 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      user_password_FILE: /run/secrets/user_password
       DB_ADMIN_USER: "${DB_ADMIN_USER}"
       DB_ADMIN_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_root_password
-      - mysql_password
+      - user_password
       - db_admin_password
     volumes:
       - mariadb_data:/var/lib/mysql
@@ -38,7 +38,7 @@ services:
       DOMAIN_NAME: "${DOMAIN_NAME}"
     secrets:
       - db_admin_password
-      - mysql_password
+      - user_password
     volumes:
       - wordpress_data:/var/www/html
 
@@ -63,8 +63,8 @@ services:
 secrets:
   db_root_password:
     file: ../secrets/db_root_password.txt
-  mysql_password:
-    file: ../secrets/mysql_password.txt
+  user_password:
+    file: ../secrets/user_password.txt
   db_admin_password:
     file: ../secrets/db_admin_password.txt
   tls_cert:

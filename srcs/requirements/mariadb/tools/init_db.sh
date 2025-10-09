@@ -5,9 +5,13 @@ set -e
 if [ -f /run/secrets/db_root_password ]; then
     MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 fi
-if [ -f /run/secrets/mysql_password]; then
-    MYSQL_PASSWORD=$(cat /run/secrets/mysql_password)
+
+if [ -f /run/secrets/user_password ]; then
+    MYSQL_USER_PASSWORD=$(cat /run/secrets/user_password)
 fi
+
+: "${MYSQL_USER_PASSWORD:?Need to set MYSQL_USER_PASSWORD}"
+
 if [ -f /run/secrets/db_admin_password ]; then
     DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)
 fi
@@ -17,7 +21,7 @@ fi
 : "${MYSQL_ROOT_PASSWORD:?Need to set MYSQL_ROOT_PASSWORD}"
 : "${MYSQL_DATABASE:?Need to set MYSQL_DATABASE}"
 : "${MYSQL_USER:?Need to set MYSQL_USER}"
-: "${MYSQL_PASSWORD:?Need to set MYSQL_PASSWORD}"
+: "${user_password:?Need to set user_password}"
 : "${DB_ADMIN_USER:?Need to set DB_ADMIN_USER}"
 : "${DB_ADMIN_PASSWORD:?Need to set DB_ADMIN_PASSWORD}"
 
@@ -34,7 +38,7 @@ mariadb -uroot <<-EOSQL
     DROP DATABASE IF EXISTS test;
     CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-    CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+    CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_USER_PASSWORD}';
     CREATE USER IF NOT EXISTS '${DB_ADMIN_USER}'@'%' IDENTIFIED BY '${DB_ADMIN_PASSWORD}';
 
     GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${DB_ADMIN_USER}'@'%';

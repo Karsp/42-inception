@@ -29,6 +29,11 @@ RUN ln -sf /usr/bin/php82 /usr/bin/php && \
 # Prepare working directory
 WORKDIR /var/www/html
 
+# make sure PHP binaries are available in the default path.
+RUN ln -sf /usr/bin/php82 /usr/bin/php && \
+    ln -sf /usr/sbin/php-fpm82 /usr/sbin/php-fpm
+
+
 # Copy WordPress setup script
 COPY tools/setup_wordpress.sh /usr/local/bin/setup_wordpress.sh
 RUN chmod +x /usr/local/bin/setup_wordpress.sh

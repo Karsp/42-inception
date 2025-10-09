@@ -4,7 +4,7 @@ COMPOSE_FILE := srcs/docker-compose.yml
 ENV_FILE := srcs/.env
 PROJECT_NAME := inception
 
-.PHONY: build up down start stop re logs ps prune swarm-init swarm-leave swarm-status
+.PHONY: build up down start stop re logs ps prune swarm-init swarm-leave swarm-status clean fclean
 
 # ------------------------------------------------------------------------------
 # Docker Swarm Management
@@ -26,7 +26,7 @@ swarm-status:
 # Deploys the entire stack with secrets via Swarm
 up: swarm-init
 	@echo "🚀 Loading environment variables from .env..."
-	set -a; . srcs/.env; set +a; \
+	set -a; . $(ENV_FILE); set +a; \
 	echo "🚀 Deploying stack '$(PROJECT_NAME)'..."; \
 	docker stack deploy -c $(COMPOSE_FILE) $(PROJECT_NAME)
 
@@ -35,7 +35,6 @@ down:
 	docker stack rm $(PROJECT_NAME)
 	@echo "⏳ Waiting for cleanup..."
 	sleep 5
-	@docker system prune -f --volumes
 
 # Builds the local images with compose
 build:
@@ -44,21 +43,36 @@ build:
 	docker build -t inception_mariadb ./srcs/requirements/mariadb
 	docker build -t inception_wordpress ./srcs/requirements/wordpress
 
-logs:
-	docker service logs -f $(PROJECT_NAME) logs -f
+# ------------------------------------------------------------------------------
+# Cleaning Targets
+# ------------------------------------------------------------------------------
 
-ps:
-	docker stack ps $(PROJECT_NAME)
+clean:
+	@echo "🧹 Cleaning Docker resources (containers, networks, and volumes)..."
+	@docker stack rm $(PROJECT_NAME) 2>/dev/null || true
+	@sleep 5
+	@docker network prune -f
+	@docker volume prune -f
+	@docker container prune -f
+	@echo "✅ Clean complete."
 
-# Cleans everything (images, volumes, networks)
+fclean: clean
+	@echo "🔥 Removing custom images and leaving swarm..."
+	@docker image rm inception_nginx inception_mariadb inception_wordpress 2>/dev/null || true
+	@docker system prune -af --volumes
+	@docker swarm leave --force 2>/dev/null || true
+	@echo "✅ Full clean complete."
+
 prune:
 	@echo "🧽 Cleaning Docker system..."
 	docker system prune -af --volumes
 
-re: down build up
+re: fclean build up
 	@echo "🔁 Stack rebuilt and redeployed successfully ✅"
 
 # make build   # builds all images from srcs/requirements/*
 # make up      # deploys using srcs/docker-compose.yml
 # make ps      # check running stack services
-# make down    # remove everything
+# down	Removes stack only
+# clean	Removes stack + unused containers, networks, and volumes
+# fclean	Everything (stack, images, Swarm, volumes)
