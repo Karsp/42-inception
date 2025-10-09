@@ -9,12 +9,12 @@ services:
     networks:
       - inception
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      # MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
-      user_password_FILE: /run/secrets/user_password
+      # USER_PASSWORD_FILE: /run/secrets/user_password
       DB_ADMIN_USER: "${DB_ADMIN_USER}"
-      DB_ADMIN_PASSWORD_FILE: /run/secrets/db_admin_password
+      # DB_ADMIN_PASSWORD_FILE: /run/secrets/db_admin_password
     secrets:
       - db_root_password
       - user_password

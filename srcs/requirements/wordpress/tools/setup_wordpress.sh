@@ -62,10 +62,10 @@ wp core install \
 
 # --- Create secondary user ---
 echo "[wordpress] Creating secondary user..."
-user_password=$(cat /run/secrets/user_password)
+USER_PASSWORD=$(cat /run/secrets/user_password)
 wp user create "${MYSQL_USER}" "${MYSQL_USER_EMAIL}" \
   --role=editor \
-  --user_pass="${user_password}" \
+  --user_pass="${USER_PASSWORD}" \
   --allow-root
 
 # --- Install and activate Astra theme ---
