@@ -1,5 +1,7 @@
 #!/bin/sh
 set -e
+set -x  # logs on 👈 add this line to print every command
+
 
 WWW_DIR="/var/www/html"
 
@@ -53,10 +55,10 @@ wp core install \
 
 # --- Create secondary user ---
 echo "[wordpress] Creating secondary user..."
-MYSQL_PASSWORD=$(cat /run/secrets/mysql_password)
+user_password=$(cat /run/secrets/user_password)
 wp user create "${MYSQL_USER}" "${MYSQL_USER_EMAIL}" \
   --role=editor \
-  --user_pass="${MYSQL_PASSWORD}" \
+  --user_pass="${user_password}" \
   --allow-root
 
 # --- Install and activate Astra theme ---
