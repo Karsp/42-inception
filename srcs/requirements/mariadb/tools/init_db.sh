@@ -5,8 +5,8 @@ set -e
 if [ -f /run/secrets/db_root_password ]; then
     MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 fi
-if [ -f /run/secrets/db_password ]; then
-    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+if [ -f /run/secrets/mysql_password]; then
+    MYSQL_PASSWORD=$(cat /run/secrets/mysql_password)
 fi
 if [ -f /run/secrets/db_admin_password ]; then
     DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)

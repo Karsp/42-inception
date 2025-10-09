@@ -2,6 +2,8 @@
 set -e
 
 DB_DIR="/var/lib/mysql"
+# DB_DIR="/var/lib/mariadbd"
+# DB_DIR="/usr/bin/mariadbd"
 
 # Initialize database if not exists
 if [ ! -d "$DB_DIR/mysql" ]; then
