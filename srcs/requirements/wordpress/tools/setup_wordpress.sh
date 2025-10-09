@@ -7,6 +7,8 @@ WWW_DIR="/var/www/html"
 
 echo "[wordpress] Starting WordPress setup..."
 
+
+
 # Clean volume content
 rm -rf "$WWW_DIR"/*
 mkdir -p "$WWW_DIR"
@@ -19,7 +21,12 @@ if ! command -v wp >/dev/null 2>&1; then
   mv wp-cli.phar /usr/local/bin/wp
 fi
 
+# # Ensure PHP has enough memory
+# echo "[wordpress] Setting PHP memory limit..."
+# echo "memory_limit = 512M" > /etc/php82/conf.d/99-memory-limit.ini
+
 # --- Download WordPress ---
+# Check if wp exist
 echo "[wordpress] Downloading WordPress..."
 wp core download --allow-root --path="$WWW_DIR"
 
@@ -55,10 +62,10 @@ wp core install \
 
 # --- Create secondary user ---
 echo "[wordpress] Creating secondary user..."
-user_password=$(cat /run/secrets/user_password)
+USER_PASSWORD=$(cat /run/secrets/user_password)
 wp user create "${MYSQL_USER}" "${MYSQL_USER_EMAIL}" \
   --role=editor \
-  --user_pass="${user_password}" \
+  --user_pass="${USER_PASSWORD}" \
   --allow-root
 
 # --- Install and activate Astra theme ---

@@ -10,8 +10,6 @@ if [ -f /run/secrets/user_password ]; then
     MYSQL_USER_PASSWORD=$(cat /run/secrets/user_password)
 fi
 
-: "${MYSQL_USER_PASSWORD:?Need to set MYSQL_USER_PASSWORD}"
-
 if [ -f /run/secrets/db_admin_password ]; then
     DB_ADMIN_PASSWORD=$(cat /run/secrets/db_admin_password)
 fi
@@ -21,9 +19,10 @@ fi
 : "${MYSQL_ROOT_PASSWORD:?Need to set MYSQL_ROOT_PASSWORD}"
 : "${MYSQL_DATABASE:?Need to set MYSQL_DATABASE}"
 : "${MYSQL_USER:?Need to set MYSQL_USER}"
-: "${user_password:?Need to set user_password}"
+: "${MYSQL_USER_PASSWORD:?Need to set MYSQL_USER_PASSWORD}"
 : "${DB_ADMIN_USER:?Need to set DB_ADMIN_USER}"
 : "${DB_ADMIN_PASSWORD:?Need to set DB_ADMIN_PASSWORD}"
+
 
 echo "[init_db] Setting up initial database and users..."
 
