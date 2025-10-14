@@ -18,4 +18,7 @@ else
 fi
 
 echo "[entrypoint] Starting MariaDB..."
+echo "[entrypoint] Flushing blocked hosts..."
+mariadb-admin -uroot -p"${MYSQL_ROOT_PASSWORD}" flush-hosts || true
+
 exec "$@"

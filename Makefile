@@ -4,7 +4,7 @@ COMPOSE_FILE := srcs/docker-compose.yml
 ENV_FILE := srcs/.env
 PROJECT_NAME := inception
 
-.PHONY: build up down start stop re logs ps prune swarm-init swarm-leave swarm-status clean fclean
+.PHONY: make build up down start stop re logs ps prune swarm-init swarm-leave swarm-status clean fclean
 
 # ------------------------------------------------------------------------------
 # Docker Swarm Management
@@ -22,6 +22,7 @@ swarm-status:
 # ------------------------------------------------------------------------------
 # Stack (Swarm) Commands
 # ------------------------------------------------------------------------------
+
 
 # Deploys the entire stack with secrets via Swarm
 up: swarm-init
@@ -43,6 +44,8 @@ build:
 	docker build -t inception_mariadb ./srcs/requirements/mariadb
 	docker build -t inception_wordpress ./srcs/requirements/wordpress
 
+make: build up
+
 # ------------------------------------------------------------------------------
 # Cleaning Targets
 # ------------------------------------------------------------------------------
@@ -60,6 +63,7 @@ fclean: clean
 	@echo "🔥 Removing custom images and leaving swarm..."
 	@docker image rm inception_nginx inception_mariadb inception_wordpress 2>/dev/null || true
 	@docker system prune -af --volumes
+	@docker volume rm inception_mariadb_data inception_wordpress_data 
 	@docker swarm leave --force 2>/dev/null || true
 	@echo "✅ Full clean complete."
 

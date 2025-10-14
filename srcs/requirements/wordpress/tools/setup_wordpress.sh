@@ -44,10 +44,20 @@ sed -i "s/password_here/${DB_PASS}/" wp-config.php
 sed -i "s/localhost/mariadb/" wp-config.php
 
 # --- Wait for MariaDB ---
-echo "[wordpress] Waiting for MariaDB to be ready..."
-until mysqladmin ping -h"mariadb" --silent; do
-  sleep 2
+# echo "[wordpress] Waiting for MariaDB to be ready..."
+# until mysqladmin ping -h"mariadb" --silent; do
+#   sleep 2
+# done
+# wait until we can authenticate and run a simple query against the DB
+echo "[wordpress] Waiting for MariaDB to be fully ready for authentication..."
+while ! mariadb --host=mariadb -u"${DB_ADMIN_USER}" -p"$(cat /run/secrets/db_admin_password)" \
+    -e "SELECT 1" "${MYSQL_DATABASE}" >/dev/null 2>&1; do
+  echo "[wordpress] DB not ready yet, sleeping 3s..."
+  sleep 3
 done
+# small extra wait to be safe
+sleep 2
+
 
 # --- Install WordPress ---
 echo "[wordpress] Installing WordPress..."
