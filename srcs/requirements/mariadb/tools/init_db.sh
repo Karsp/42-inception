@@ -23,15 +23,26 @@ fi
 : "${DB_ADMIN_USER:?Need to set DB_ADMIN_USER}"
 : "${DB_ADMIN_PASSWORD:?Need to set DB_ADMIN_PASSWORD}"
 
+# Ensure proper permissions before start
+chown -R mysql:mysql /var/lib/mysql /run/mysqld
 
-echo "[init_db] Setting up initial database and users..."
+echo "[init_db] Starting temporary MariaDB server (no networking)..."
+su-exec mysql mariadbd --skip-networking --socket=/run/mysqld/mysqld.sock &
+pid=$!
 
-# Start a temporary MariaDB server
-mariadbd-safe --skip-networking --socket=/run/mysqld/mysqld.sock &
-sleep 5
+# Wait until socket is ready
+for i in $(seq 1 20); do
+    if [ -S /run/mysqld/mysqld.sock ]; then
+        echo "[init_db] MariaDB socket available."
+        break
+    fi
+    echo "[init_db] Waiting for MariaDB socket... ($i)"
+    sleep 1
+done
 
-# Apply SQL commands using new mariadb CLI
-mariadb -uroot <<-EOSQL
+# Apply SQL initialization
+echo "[init_db] Applying initial SQL setup..."
+mariadb --socket=/run/mysqld/mysqld.sock -u root <<-EOSQL
     ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
     DELETE FROM mysql.user WHERE User='';
     DROP DATABASE IF EXISTS test;
@@ -45,7 +56,8 @@ mariadb -uroot <<-EOSQL
     FLUSH PRIVILEGES;
 EOSQL
 
-# Shutdown temporary server using the new mariadb-admin CLI
-mariadb-admin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
+echo "[init_db] Initialization SQL complete. Shutting down temporary server..."
+mariadb-admin --socket=/run/mysqld/mysqld.sock -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
 
+wait "$pid" || true
 echo "[init_db] Initialization complete."

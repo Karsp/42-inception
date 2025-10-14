@@ -59,7 +59,7 @@ clean:
 	@docker container prune -f
 	@echo "✅ Clean complete."
 
-fclean: clean
+fclean: down clean
 	@echo "🔥 Removing custom images and leaving swarm..."
 	@docker image rm inception_nginx inception_mariadb inception_wordpress 2>/dev/null || true
 	@docker system prune -af --volumes

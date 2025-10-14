@@ -1,7 +1,5 @@
 #!/bin/sh
 set -e
-set -x  # logs on 👈 add this line to print every command
-
 
 WWW_DIR="/var/www/html"
 
@@ -44,10 +42,6 @@ sed -i "s/password_here/${DB_PASS}/" wp-config.php
 sed -i "s/localhost/mariadb/" wp-config.php
 
 # --- Wait for MariaDB ---
-# echo "[wordpress] Waiting for MariaDB to be ready..."
-# until mysqladmin ping -h"mariadb" --silent; do
-#   sleep 2
-# done
 # wait until we can authenticate and run a simple query against the DB
 echo "[wordpress] Waiting for MariaDB to be fully ready for authentication..."
 while ! mariadb --host=mariadb -u"${DB_ADMIN_USER}" -p"$(cat /run/secrets/db_admin_password)" \

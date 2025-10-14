@@ -46,6 +46,9 @@ RUN mkdir -p /run/php && \
 
 RUN echo "memory_limit = 512M" > /etc/php82/conf.d/99-memory-limit.ini
 
+# Copy favicon into the web root
+COPY assets/favicon.ico /var/www/html/favicon.ico
+
 # Expose FPM port
 EXPOSE 9000
 
