@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -x
 
 WWW_DIR="/var/www/html"
 
@@ -67,13 +67,44 @@ wp core install \
 # --- Create secondary user ---
 echo "[wordpress] Creating secondary user..."
 USER_PASSWORD=$(cat /run/secrets/user_password)
-wp user create "${MYSQL_USER}" "${MYSQL_USER_EMAIL}" \
-  --role=editor \
-  --user_pass="${USER_PASSWORD}" \
-  --allow-root
+if ! wp user get lalalala --allow-root > /dev/null 2>&1; then
+    wp user create lalalala lalalala@student.42madrid.com --role=editor --user_pass="${USER_PASSWORD}" --allow-root
+fi
+
+
 
 # --- Install and activate Astra theme ---
 wp theme install astra --activate --allow-root
+
+
+
+# --- Install and enable Redis Cache plugin ---
+echo "[wordpress] Installing Redis Cache plugin..."
+wp plugin install redis-cache --activate --allow-root
+
+echo "[wordpress] Configuring Redis connection..."
+wp config set WP_REDIS_HOST "redis" --allow-root
+wp config set WP_REDIS_PORT 6379 --raw --allow-root
+wp config set WP_CACHE true --raw --allow-root
+
+# Wait for Redis to become reachable
+echo "[wordpress] Waiting for Redis service..."
+until php -r "if (@fsockopen('redis', 6379)) exit(0); else exit(1);" 2>/dev/null; do
+  echo "[wordpress] Redis not ready yet, sleeping 3s..."
+  sleep 3
+done
+echo "[wordpress] Redis service is reachable."
+
+# Try enabling Redis cache (with fallback)
+if ! wp redis enable --allow-root; then
+  echo "[wordpress] wp redis enable failed — trying manual activation..."
+  wp plugin activate redis-cache --allow-root
+  wp eval "Redis_Object_Cache::enable();" --allow-root
+fi
+
+echo "[wordpress] Redis cache configured successfully."
+
+
 
 echo "[wordpress] Setup complete. Starting PHP-FPM..."
 exec php-fpm82 -F

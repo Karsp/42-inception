@@ -43,6 +43,7 @@ build:
 	docker build -t inception_nginx ./srcs/requirements/nginx
 	docker build -t inception_mariadb ./srcs/requirements/mariadb
 	docker build -t inception_wordpress ./srcs/requirements/wordpress
+	docker build -t inception_redis ./srcs/requirements/redis
 
 make: build up
 
@@ -59,11 +60,12 @@ clean:
 	@docker container prune -f
 	@echo "✅ Clean complete."
 
-fclean: down clean
+fclean: down 
+	clean
 	@echo "🔥 Removing custom images and leaving swarm..."
 	@docker image rm inception_nginx inception_mariadb inception_wordpress 2>/dev/null || true
 	@docker system prune -af --volumes
-	@docker volume rm inception_mariadb_data inception_wordpress_data 
+# 	@docker volume rm inception_mariadb_data inception_wordpress_data 
 	@docker swarm leave --force 2>/dev/null || true
 	@echo "✅ Full clean complete."
 

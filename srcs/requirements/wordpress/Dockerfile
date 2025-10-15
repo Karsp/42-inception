@@ -17,6 +17,8 @@ RUN apk update && apk add --no-cache \
 	php82-phar \
     php82-session \
     mariadb-client \
+    php82-pecl-redis \
+	php82-tokenizer \
     wget \
     tar \
     curl \

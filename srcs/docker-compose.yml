@@ -60,7 +60,17 @@ services:
       - tls_key
     volumes:
       - wordpress_data:/var/www/html   # serve WordPress files
-      
+    
+  redis:
+    image: inception_redis
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - inception
+    volumes:
+      - redis_data:/data
+
 
 secrets:
   db_root_password:
@@ -77,6 +87,8 @@ secrets:
 volumes:
   mariadb_data:
   wordpress_data:
+  redis_data:
+
 
 networks:
   inception:
