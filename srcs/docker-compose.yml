@@ -70,6 +70,16 @@ services:
       - inception
     volumes:
       - redis_data:/data
+  
+  static_site:
+    image: inception_static_site
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - inception
+    ports:
+      - "8080:80"
 
 
 secrets:

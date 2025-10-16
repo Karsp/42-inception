@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Projects — David Avilés Leiva</title>
+  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body class="page">
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">David Avilés Leiva</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="https://www.linkedin.com/in/dm-daviles" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </nav>
+    <div class="hero">
+      <h1>Selected Projects</h1>
+      <p class="sub">Visual identity, web redesign and corporate site work. Click a card to open details.</p>
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="projects-grid" id="projectsGrid">
+      <!-- Project card template -->
+      <article class="card" data-title="Visual Identity — Paréntesis de olvido" data-desc="Brand identity and packaging system exploring memory, decay and poetic symbolism." data-link="https://www.behance.net/gallery/201865147/Visual-Identity-Parntesis-de-olvido">
+        <div class="card-media">
+          <img src="assets/projects/1.jpg" alt="Paréntesis de olvido — Visual Identity">
+        </div>
+        <div class="card-body">
+          <h3>Visual Identity — Paréntesis de olvido</h3>
+          <p>Brand identity & packaging exploring memory and poetic narratives.</p>
+        </div>
+      </article>
+
+      <article class="card" data-title="Site Upgrade — Redesign & Develop" data-desc="Responsive site upgrade with Bootstrap, improved UX and content structure for an automotive client." data-link="https://www.behance.net/gallery/162323633/Site-Upgrade-Redesign-Develop">
+        <div class="card-media">
+          <img src="assets/projects/2.jpg" alt="Site Upgrade - Redesign & Develop">
+        </div>
+        <div class="card-body">
+          <h3>Site Upgrade — Redesign & Develop</h3>
+          <p>UX-first website redesign and front-end development for improved conversions.</p>
+        </div>
+      </article>
+
+      <article class="card" data-title="Corporate Site — Web Design & Develop" data-desc="Corporate site design & development: clean, modular CMS-ready templates." data-link="https://www.behance.net/gallery/161213343/Corporate-Site-Web-Design-Develop">
+        <div class="card-media">
+          <img src="assets/projects/3.jpg" alt="Corporate Site - Web Design & Develop">
+        </div>
+        <div class="card-body">
+          <h3>Corporate Site — Web Design & Develop</h3>
+          <p>Corporate web presence with scalable layouts and professional visual system.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- Lightbox modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <button id="modalClose" class="modal-close" aria-label="Close">×</button>
+    <div class="modal-content">
+      <img id="modalImg" src="" alt="" />
+      <div class="modal-meta">
+        <h2 id="modalTitle"></h2>
+        <p id="modalDesc"></p>
+        <a id="modalLink" class="button"  href="#" target="_blank" rel="noopener">View on Behance</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/projects.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>David Avilés Leiva — Portfolio</title>
+  <link id="favicon" rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <style>
+    /* === GLOBAL STYLES === */
+    :root {
+      --bg: #0f172a;
+      --fg: #f8fafc;
+      --accent: #f97316;
+      --accent-light: #fb923c;
+      --muted: #94a3b8;
+      --card: #1e293b;
+    }
+    body {
+      margin: 0;
+      font-family: "Inter", Arial, sans-serif;
+	  background-color: var(--bg);
+      color: var(--fg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+	main {
+      padding-top: 4rem;
+    }
+
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0.2em 0;
+    }
+
+    h2 {
+      color: var(--accent-light);
+      font-weight: 400;
+      margin-bottom: 1.5em;
+    }
+
+    /* === HEADER & NAVIGATION === */
+    .site-header {
+      padding: 48px 20px 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      margin-left: 16px;
+      text-decoration: none;
+      padding: 6px 8px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .nav-links a.active,
+    .nav-links a:hover {
+      color: var(--fg);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* === BUTTON-LIKE LINKS === */
+    .links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    a.button {
+      text-decoration: none;
+      color: var(--fg);
+      background-color: var(--card);
+      border: 2px solid var(--accent);
+      padding: 0.8em 1.5em;
+      border-radius: 1.5em;
+      transition: 0.2s ease;
+      display: inline-block;
+    }
+
+    a.button:hover {
+      background-color: var(--accent);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    /* === FOOTER === */
+    footer {
+      margin-top: 6rem;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">David Avilés Leiva</a>
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="https://www.linkedin.com/in/dm-daviles" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <h1>David Avilés Leiva</h1>
+    <h2>Multimedia Designer & Web Developer</h2>
+
+    <p>Welcome to my portfolio — explore my work and creative projects.</p>
+
+    <div class="links">
+      <a class="button" href="https://www.linkedin.com/in/dm-daviles" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="button" href="https://github.com/Karsp" target="_blank" rel="noopener">GitHub</a>
+      <a class="button" href="https://www.behance.net/dm-daviles" target="_blank" rel="noopener">Behance</a>
+    </div>
+
+    <div class="links">
+      <a class="button" href="projects.html" rel="noopener">See my project page</a>
+    </div>
+  </main>
+
+  <footer>© 2025 David Avilés Leiva — Cardamom Design Studio</footer>
+</body>
+</html>
