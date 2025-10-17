@@ -45,6 +45,7 @@ build:
 	docker build -t inception_wordpress ./srcs/requirements/wordpress
 	docker build -t inception_redis ./srcs/requirements/redis
 	docker build -t inception_static_site ./srcs/requirements/static_site
+	docker build -t inception_adminer ./srcs/requirements/adminer
 
 make: build up
 

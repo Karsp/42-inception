@@ -81,6 +81,18 @@ services:
     ports:
       - "8080:80"
 
+  adminer:
+    image: inception_adminer
+    deploy:
+      restart_policy:
+        condition: on-failure
+    expose:
+      - "8080" #Note: we use expose instead of ports, since only Nginx should talk to Adminer internally — we’ll proxy it, not expose it publicly.
+    environment:
+      - ADMINER_DEFAULT_SERVER=mariadb
+    networks:
+      - inception
+
 
 secrets:
   db_root_password:
