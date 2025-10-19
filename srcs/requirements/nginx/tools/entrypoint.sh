@@ -12,5 +12,11 @@ ln -sf /dev/stderr /var/log/nginx/error.log
 # Substitute env vars in nginx.conf
 envsubst '$DOMAIN_NAME' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
+# Wait for upstream services to be reachable
+echo "Waiting for Portainer and Adminer..."
+until ping -c1 portainer >/dev/null 2>&1 && ping -c1 adminer >/dev/null 2>&1; do
+    sleep 2
+done
+
 # Start nginx in the foreground
 exec nginx -g "daemon off;"

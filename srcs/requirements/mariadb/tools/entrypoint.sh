@@ -12,7 +12,6 @@ if [ ! -d "$DB_DIR/mysql" ]; then
     echo "[entrypoint] Initializing MariaDB data directory..."
     mariadb-install-db --user=mysql --datadir="$DB_DIR" --skip-test-db > /dev/null
 
-    # Run initialization script only during first setup
     if [ -x /usr/local/bin/init_db.sh ]; then
         echo "[entrypoint] Running initialization script..."
         /usr/local/bin/init_db.sh
@@ -22,20 +21,20 @@ else
 fi
 
 echo "[entrypoint] Starting MariaDB..."
-# if [ -f /run/secrets/db_root_password ]; then
-#     MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
-# 	# echo "[entrypoint] Flushing blocked hosts..."
-# 	# mariadb-admin -uroot -p"${MYSQL_ROOT_PASSWORD}" flush-hosts || true
-# 	echo "[entrypoint] Flushing blocked hosts..."
-# 	for i in $(seq 1 10); do
-# 		if mariadb-admin ping -uroot -p"${MYSQL_ROOT_PASSWORD}" --silent 2>/dev/null; then
-# 			mariadb-admin -uroot -p"${MYSQL_ROOT_PASSWORD}" flush-hosts && break
-# 		fi
-# 		echo "[entrypoint] Waiting for MariaDB before flush-hosts... ($i)"
-# 		sleep 2
-# 	done
-# else
-#     echo "[entrypoint] Root Password secret not found."
-# fi
+mysqld_safe --datadir="$DB_DIR" --user=mysql &
+pid="$!"
 
-exec su-exec mysql "$@" #drop privileges inside the entrypoint
+echo "[entrypoint] Waiting for MariaDB server to start..."
+until mysqladmin ping -h "127.0.0.1" --silent; do
+    sleep 1
+done
+
+if [ -n "$MYSQL_ROOT_PASSWORD" ]; then
+    echo "[entrypoint] Flushing blocked hosts..."
+    mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "FLUSH HOSTS;" || true
+else
+    echo "[entrypoint] Root Password secret not found."
+fi
+
+echo "[entrypoint] MariaDB ready and running (PID $pid)"
+wait "$pid"

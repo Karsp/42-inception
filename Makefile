@@ -67,7 +67,7 @@ fclean: down clean
 	@echo "🔥 Removing custom images and leaving swarm..."
 	@docker image rm inception_nginx inception_mariadb inception_wordpress 2>/dev/null || true
 	@docker system prune -af --volumes
-# 	@docker volume rm inception_mariadb_data inception_wordpress_data 
+# 	@docker volume rm inception_mariadb_data inception_wordpress_data inception_redis_data inception_portainer_data
 	@docker swarm leave --force 2>/dev/null || true
 	@echo "✅ Full clean complete."
 

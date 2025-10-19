@@ -53,6 +53,7 @@ services:
       DOMAIN_NAME: "${DOMAIN_NAME}"
     depends_on:
       - wordpress
+      - portainer
     networks:
       - inception
     secrets:
@@ -98,11 +99,11 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-    ports:
-      - "9000:9000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock  # allows Portainer to manage Docker
+    # ports:
+    #   - "9443:9443"  # Optional: HTTPS
     networks:
       - inception
 
