@@ -46,6 +46,7 @@ build:
 	docker build -t inception_redis ./srcs/requirements/redis
 	docker build -t inception_static_site ./srcs/requirements/static_site
 	docker build -t inception_adminer ./srcs/requirements/adminer
+	docker build -t inception_portainer ./srcs/requirements/portainer
 
 make: build up
 

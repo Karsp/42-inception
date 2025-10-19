@@ -93,6 +93,19 @@ services:
     networks:
       - inception
 
+  portainer:
+    image: inception_portainer
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - inception
+
 
 secrets:
   db_root_password:
@@ -110,7 +123,7 @@ volumes:
   mariadb_data:
   wordpress_data:
   redis_data:
-
+  portainer_data:
 
 networks:
   inception:
