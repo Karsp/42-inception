@@ -93,41 +93,19 @@ services:
       - ADMINER_DEFAULT_SERVER=mariadb
     networks:
       - inception
-  
-  netdata:
-    image: inception_netdata
-    cap_add:
-      - SYS_PTRACE          # allows Netdata to read system metrics
-      - SYS_ADMIN           # optional for advanced metrics
-    ports:
-      - "19999:19999"       # Netdata default HTTP port, can keep or hide behind Nginx
+
+  portainer:
+    image: inception_portainer
     deploy:
       restart_policy:
         condition: on-failure
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock  # allows Portainer to manage Docker
+    ports:
+      - "9443:9443"  # Optional: HTTPS
     networks:
       - inception
-    volumes:
-      - netdata_config:/etc/netdata
-      - netdata_lib:/var/lib/netdata
-      - netdata_cache:/var/cache/netdata
-      - /etc/passwd:/host/etc/passwd:ro
-      - /etc/group:/host/etc/group:ro
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
-
-  # portainer:
-  #   image: inception_portainer
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #     - portainer_data:/data
-  #     - /var/run/docker.sock:/var/run/docker.sock  # allows Portainer to manage Docker
-  #   ports:
-  #     - "9443:9443"  # Optional: HTTPS
-  #   networks:
-  #     - inception
 
 
 secrets:
@@ -146,9 +124,7 @@ volumes:
   mariadb_data:
   wordpress_data:
   redis_data:
-  netdata_config:
-  netdata_lib:
-  netdata_cache:
+  portainer_data:
 
 networks:
   inception:
