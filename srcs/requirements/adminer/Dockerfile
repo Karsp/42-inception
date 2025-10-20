@@ -16,3 +16,10 @@ EXPOSE 8080
 # Run with PHP’s built-in web server
 CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
 # https://daviles-.42.fr/adminer/
+# Login with:
+
+# - **System:** MySQL
+# - **Server:** `mariadb`
+# - **Username:** `daviles-`
+# - **Password:** abc123-
+# - **Database:** inception_db
