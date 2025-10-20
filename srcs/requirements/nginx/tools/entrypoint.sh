@@ -13,8 +13,8 @@ ln -sf /dev/stderr /var/log/nginx/error.log
 envsubst '$DOMAIN_NAME' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # Wait for upstream services to be reachable
-echo "Waiting for WordPress, Portainer and Adminer..."
-until nc -z wordpress 9000 && nc -z portainer 9443 && nc -z adminer 8080; do
+echo "Waiting for WordPress,  and Adminer..."
+until nc -z wordpress 9000 && nc -z adminer 8080; do
     sleep 2
 done
 echo "All backends up, starting nginx..."
