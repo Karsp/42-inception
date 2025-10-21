@@ -29,9 +29,10 @@ RUN openssl req -x509 -newkey rsa:4096 -nodes \
 VOLUME ["/data"]
 
 # Expose only HTTPS port
-EXPOSE 9443
+EXPOSE 9080
 
 # Run Portainer on 9080 instead of 9000 to avoid conflict with WordPress
-# CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled"]
-CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled", "--base-url", "/portainer", "--tlsverify", "--tlscert", "/certs/portainer.crt", "--tlskey", "/certs/portainer.key", "--bind", ":9443"]
+# CMD [ "--data", "/data", "--bind", ":9080" ]
+CMD ["/usr/local/bin/portainer", "--data", "/data", "--bind", ":9080"]
+# CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled", "--base-url", "/portainer", "--tlsverify", "--tlscert", "/certs/portainer.crt", "--tlskey", "/certs/portainer.key", "--bind", ":9443"]
 # https://daviles-.42.fr/portainer/
