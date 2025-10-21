@@ -33,5 +33,5 @@ EXPOSE 9443
 
 # Run Portainer on 9080 instead of 9000 to avoid conflict with WordPress
 # CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled"]
-CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled", "--tlsverify", "--tlscert", "/certs/portainer.crt", "--tlskey", "/certs/portainer.key", "--bind", ":9443"]
+CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled", "--base-url", "/portainer", "--tlsverify", "--tlscert", "/certs/portainer.crt", "--tlskey", "/certs/portainer.key", "--bind", ":9443"]
 # https://daviles-.42.fr/portainer/
