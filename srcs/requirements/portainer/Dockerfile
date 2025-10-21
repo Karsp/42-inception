@@ -2,7 +2,7 @@
 FROM alpine:3.22
 
 # Install dependencies
-RUN apk add --no-cache curl tar ca-certificates
+RUN apk add --no-cache curl tar ca-certificates openssl gettext bash
 
 
 # Set Portainer version explicitly
@@ -18,13 +18,20 @@ RUN curl -L -o /tmp/portainer.tar.gz \
     rm -rf /tmp/portainer /tmp/portainer.tar.gz
 
 
-# Create data directory
-RUN mkdir -p /data
+# Create directories for data and certs
+RUN mkdir -p /data /certs
+
+# Generate self-signed SSL certificates
+RUN openssl req -x509 -newkey rsa:4096 -nodes \
+    -keyout /certs/portainer.key -out /certs/portainer.crt -days 365 \
+    -subj "/CN=portainer.local"
 
 VOLUME ["/data"]
-# Expose Portainer web interface on 9080 (HTTP) and 9443 (HTTPS)
+
+# Expose only HTTPS port
 EXPOSE 9443
 
 # Run Portainer on 9080 instead of 9000 to avoid conflict with WordPress
-CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled"]
+# CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled"]
+CMD ["/usr/local/bin/portainer", "--data", "/data", "--http-disabled", "--tlsverify", "--tlscert", "/certs/portainer.crt", "--tlskey", "/certs/portainer.key", "--bind", ":9443"]
 # https://daviles-.42.fr/portainer/
