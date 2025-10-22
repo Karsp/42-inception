@@ -25,7 +25,7 @@ swarm-status:
 
 
 # Deploys the entire stack with secrets via Swarm
-up: swarm-init
+up: swarm-init setup
 	@echo "🚀 Loading environment variables from .env..."
 	set -a; . $(ENV_FILE); set +a; \
 	echo "🚀 Deploying stack '$(PROJECT_NAME)'..."; \
@@ -51,6 +51,21 @@ build:
 make: build up
 
 # ------------------------------------------------------------------------------
+# Local Data Setup 
+# ------------------------------------------------------------------------------
+
+setup:
+	@echo "📁 Setting up local volume directories..."
+	@set -a; . $(ENV_FILE); set +a; \
+	mkdir -p $${DB_DATA_DIR} $${WP_DATA_DIR} $${REDIS_DATA_DIR} $${PORTAINER_DATA_DIR}; \
+	echo "✅ Directories created at:"; \
+	echo "   - $$DB_DATA_DIR"; \
+	echo "   - $$WP_DATA_DIR"; \
+	echo "   - $$REDIS_DATA_DIR"; \
+	echo "   - $$PORTAINER_DATA_DIR"
+
+
+# ------------------------------------------------------------------------------
 # Cleaning Targets
 # ------------------------------------------------------------------------------
 
@@ -68,6 +83,9 @@ fclean: down clean
 	@docker image rm inception_nginx inception_mariadb inception_wordpress 2>/dev/null || true
 	@docker system prune -af --volumes
 # 	@docker volume rm inception_mariadb_data inception_wordpress_data inception_redis_data inception_portainer_data
+# 	@set -a; . $(ENV_FILE); set +a; \
+# 	rm -rf $${DB_DATA_DIR} $${WP_DATA_DIR} $${REDIS_DATA_DIR} $${PORTAINER_DATA_DIR}; \
+	echo "🗑️ Local data directories removed."
 	@docker swarm leave --force 2>/dev/null || true
 	@echo "✅ Full clean complete."
 
@@ -78,9 +96,11 @@ prune:
 re: fclean build up
 	@echo "🔁 Stack rebuilt and redeployed successfully ✅"
 
+
 # make build   # builds all images from srcs/requirements/*
-# make up      # deploys using srcs/docker-compose.yml
+# make up        # deploys stack + auto setup
 # make ps      # check running stack services
 # down	Removes stack only
 # clean	Removes stack + unused containers, networks, and volumes
-# fclean	Everything (stack, images, Swarm, volumes)
+# fclean	Everything (stack, images, Swarm, volumes)+ removes local data
+# make re        # full rebuild and redeploy

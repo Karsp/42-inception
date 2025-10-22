@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+set -e
 
 WWW_DIR="/var/www/html"
 

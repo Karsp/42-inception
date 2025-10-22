@@ -32,6 +32,7 @@ RUN ln -sf /usr/bin/php82 /usr/bin/php && \
 # Prepare working directory
 WORKDIR /var/www/html
 
+
 # make sure PHP binaries are available in the default path.
 RUN ln -sf /usr/bin/php82 /usr/bin/php && \
     ln -sf /usr/sbin/php-fpm82 /usr/sbin/php-fpm

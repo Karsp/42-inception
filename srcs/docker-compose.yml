@@ -122,9 +122,38 @@ secrets:
 
 volumes:
   mariadb_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${DB_DATA_DIR}
+
   wordpress_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${WP_DATA_DIR}
+
   redis_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${REDIS_DATA_DIR}
+
   portainer_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PORTAINER_DATA_DIR}
+
+# volumes:
+#   mariadb_data:
+#   wordpress_data:
+#   redis_data:
+#   portainer_data:
 
 networks:
   inception:
